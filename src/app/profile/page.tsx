@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth"
 import { headers } from "next/headers"
 import SignOutButton from "@/components/SignOutButton"
+import { redirect } from "next/navigation"
 
 export default async function Profile() {
 
@@ -10,9 +11,7 @@ export default async function Profile() {
         headers:await headers()
     })
 
-    if(!session) {
-        <p>no auth</p>
-    }
+    if(!session) redirect("/auth/sign-in")
     return (
         <div>
             <h1>Profile</h1>

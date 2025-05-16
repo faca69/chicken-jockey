@@ -1,12 +1,17 @@
 "use client"
 
 import { signOut } from "@/lib/auth-client"
-import { redirect } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { useState } from "react"
+
 
 
 
 function SignOutButton() {
+const router = useRouter()
+const [isPending,setIsPending] = useState(false)
+
 
     const handleSignOut = async () => {
 
@@ -17,7 +22,13 @@ function SignOutButton() {
             },
             onSuccess() {
                 toast.success("Signed out successfully")
-                redirect("/auth/sign-in")
+                router.push("/auth/sign-in")
+            },
+            onRequest() {
+                setIsPending(true)
+            },
+            onResponse() {
+                setIsPending(false)
             },
             
         }
@@ -26,7 +37,7 @@ function SignOutButton() {
     }
 
   return (
-    <button onClick={handleSignOut}>Sign Out</button>
+    <button onClick={handleSignOut} disabled={isPending}>{isPending ? "Signing Out..." : "Sign Out"}</button>
   )
 }
 

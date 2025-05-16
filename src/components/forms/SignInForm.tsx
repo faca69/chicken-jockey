@@ -1,43 +1,33 @@
 "use client"
 
-import { signIn } from "@/lib/auth-client";
 import { toast } from "sonner";
-
-
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signInFnction } from "@/actions/sign-in.action";
 
 
 const SignInForm = () => {
 
+    const [isPending,setIsPending] = useState(false)
+    const router = useRouter()
+
 
     const handleSubmit =async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        setIsPending(true)
         const formData = new FormData(e.target as HTMLFormElement)
-        const email = formData.get("email") as string;
-        if(!email) return toast.error("Email is required");
-    
-        const password = formData.get("password") as string;
-        if(!password) return toast.error("Password is required");   
 
-        await signIn.email({
-            email,
-            password,
-        },{
+        const {error} = await signInFnction(formData)
 
-            onRequest(context) {
-                console.log(context)
-            },
-            onResponse(response) {
-                console.log(response)
-            },
-            onSuccess(data) {
-                console.log(data)
-            },
-            onError(context) {
-                toast.error(context.error.message)
-            },
+        if(error) {
+            toast.error(error)
+            setIsPending(false)
+        } else {
+            toast.success("Signed in successfully")
+            router.push("/profile")
+        }
 
-
-        })
+        setIsPending(false)
     }
 
   return <div>
@@ -45,7 +35,7 @@ const SignInForm = () => {
     <form onSubmit={handleSubmit}>
         <input type="email" name="email" placeholder="Email" />
         <input type="password" name="password" placeholder="Password" />
-        <button type="submit">Sign Up</button>
+        <button type="submit" disabled={isPending}>{isPending ? "Signing In..." : "Sign In"}</button>
     </form>
 
   </div>
