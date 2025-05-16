@@ -5,6 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { createAuthMiddleware } from "better-auth/api";
 import { APIError } from "better-auth/api";
 import { VALID_DOMAINS } from "./utils";
+import { sendEmailAction } from "@/actions/send-email.action";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -13,6 +14,27 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
+    requireEmailVerification: true,
+  },
+  emailVerification:{
+
+    sendOnSignUp: true,
+    expiresIn: 60 * 60 ,
+    autoSignInAfterVerification: true,
+   async sendVerificationEmail({user,url}) {
+
+    const link = new URL(url)
+    link.searchParams.set("callbackURL", "/auth/verify")
+
+      await sendEmailAction({
+        to: user.email,
+        subject: "Verify your email",
+        meta: {
+          description: "Please verify your email by clicking the link below",
+          link: String(link),
+        },
+      });
+    },
   },
   advanced:{
     database:{

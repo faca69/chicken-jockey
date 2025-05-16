@@ -6,4 +6,4 @@ import type { auth } from "./auth";
     plugins: [inferAdditionalFields<typeof auth>()],
 })
 
-export const {signUp,signIn,signOut} = authClient;
+export const {signUp,signIn,signOut,sendVerificationEmail} = authClient;

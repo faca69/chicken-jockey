@@ -22,8 +22,8 @@ const router = useRouter()
             toast.error(error)
             setIsPending(false)
         } else {
-            toast.success("Signed up successfully")
-            router.push("/auth/sign-in")
+            toast.success("Signed up successfully please verify your email")
+            router.push("/auth/sign-up/success")
         }
 
         setIsPending(false)
