@@ -72,7 +72,6 @@ import LabelInputContainer from "@/components/LabelInputContainer";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signInFnction } from "@/actions/sign-in.action";
 import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import BottomGradient from "../BottomGradient";
@@ -83,27 +82,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { companySignUpFunction } from "@/actions/company-sign-up.action";
 
-export default function SignInForm() {
+export default function CompanyForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const router = useRouter();
 
-  const loadingSignIn = <span className="animate-pulse">Signing In...</span>;
+  const loadingText = <span className="animate-pulse">Signing Up...</span>;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsPending(true);
     const formData = new FormData(e.target as HTMLFormElement);
 
-    const { error } = await signInFnction(formData);
+    const { error } = await companySignUpFunction(formData);
 
     if (error) {
       toast.error(error);
       setIsPending(false);
     } else {
-      toast.success("Signed in successfully");
-      router.push("/profile");
+      toast.success("Sign up successful");
+      router.push("/auth/sign-up/success");
     }
 
     setIsPending(false);
@@ -131,7 +131,7 @@ export default function SignInForm() {
       <div className="space-y-2">
         <LabelInputContainer>
           <Label htmlFor="company-industry">Industry</Label>
-          <Select required>
+          <Select required name="industry">
             <SelectTrigger className="w-full">
               <SelectValue
                 className="placeholder-shown:text-muted-foreground"
@@ -179,7 +179,7 @@ export default function SignInForm() {
         className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
         type="submit"
       >
-        {isPending ? loadingSignIn : "Sign In"}
+        {isPending ? loadingText : "Sign Up"}
         <BottomGradient />
       </button>
     </form>
