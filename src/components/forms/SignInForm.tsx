@@ -1,54 +1,20 @@
-// "use client";
-
-// const SignInForm = () => {
-//   const [isPending, setIsPending] = useState(false);
-//   const router = useRouter();
-
-//   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-//     e.preventDefault();
-//     setIsPending(true);
-//     const formData = new FormData(e.target as HTMLFormElement);
-
-//     const { error } = await signInFnction(formData);
-
-//     if (error) {
-//       toast.error(error);
-//       setIsPending(false);
-//     } else {
-//       toast.success("Signed in successfully");
-//       router.push("/profile");
-//     }
-
-//     setIsPending(false);
-//   };
-
-//   return (
-//     <div>
-//       <form onSubmit={handleSubmit}>
-//         <input type="email" name="email" placeholder="Email" />
-//         <input type="password" name="password" placeholder="Password" />
-//         <button type="submit" disabled={isPending}>
-//           {isPending ? "Signing In..." : "Sign In"}
-//         </button>
-//       </form>
-//     </div>
-//   );
-// };
-
-// export default SignInForm;
-
 "use client";
 
-import React from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
+import LabelInputContainer from "@/components/LabelInputContainer";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { signInFnction } from "@/actions/sign-in.action";
+import { Button } from "../ui/button";
+import { EyeIcon, EyeOffIcon } from "lucide-react";
+import BottomGradient from "../BottomGradient";
+import Link from "next/link";
+
 export default function SignInForm() {
   const [isPending, setIsPending] = useState(false);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const router = useRouter();
 
   const loadingSignIn = <span className="animate-pulse">Signing In...</span>;
@@ -91,12 +57,27 @@ export default function SignInForm() {
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            placeholder="••••••••"
-            name="password"
-            type="password"
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              placeholder="••••••••"
+              name="password"
+              type={isPasswordVisible ? "text" : "password"}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-1/2 -translate-y-1/2"
+              onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+            >
+              {isPasswordVisible ? (
+                <EyeIcon className="h-4 w-4" />
+              ) : (
+                <EyeOffIcon className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </LabelInputContainer>
         <button
           disabled={isPending}
@@ -106,30 +87,16 @@ export default function SignInForm() {
           {isPending ? loadingSignIn : "Sign In"}
           <BottomGradient />
         </button>
+        <div className="text-sm text-center p-5">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/auth/sign-up"
+            className="text-primary underline underline-offset-4"
+          >
+            Sign up
+          </Link>
+        </div>
       </form>
     </div>
   );
 }
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
-      <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
-    </>
-  );
-};
-
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => {
-  return (
-    <div className={cn("flex w-full flex-col space-y-2", className)}>
-      {children}
-    </div>
-  );
-};

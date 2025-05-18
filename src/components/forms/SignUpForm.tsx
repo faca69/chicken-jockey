@@ -1,43 +1,61 @@
-"use client";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Building2, User } from "lucide-react";
+import Link from "next/link";
+import UserForm from "./UserForm";
+import CompanyForm from "./CompanyForm";
 
-import { toast } from "sonner";
-import { useState } from "react";
-import { signUpFnction } from "@/actions/sign-up.action";
-import { useRouter } from "next/navigation";
-
-const SignUpForm = () => {
-  const [isPending, setIsPending] = useState(false);
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsPending(true);
-    const formData = new FormData(e.target as HTMLFormElement);
-
-    const { error } = await signUpFnction(formData);
-
-    if (error) {
-      toast.error(error);
-      setIsPending(false);
-    } else {
-      toast.success("Signed up successfully please verify your email");
-      router.push("/auth/sign-up/success");
-    }
-
-    setIsPending(false);
-  };
+export function SignUpForm() {
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Name" />
-        <input type="email" name="email" placeholder="Email" />
-        <input type="password" name="password" placeholder="Password" />
-        <button type="submit" disabled={isPending}>
-          {isPending ? "Signing Up..." : "Sign Up"}
-        </button>
-      </form>
-    </div>
-  );
-};
+    <Card
+      className="w-full max-w-md"
+      style={{ border: "none", backgroundColor: "transparent" }}
+    >
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold text-center">
+          Create an account
+        </CardTitle>
+        <CardDescription className="text-center">
+          Choose your account type to get started
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Tabs defaultValue="jobseeker" className="max-w-md">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="jobseeker" className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              User
+            </TabsTrigger>
+            <TabsTrigger value="company" className="flex items-center gap-2">
+              <Building2 className="h-4 w-4" />
+              Company
+            </TabsTrigger>
+          </TabsList>
 
-export default SignUpForm;
+          <TabsContent value="jobseeker">
+            <UserForm />
+          </TabsContent>
+
+          <TabsContent value="company">
+            <CompanyForm />
+          </TabsContent>
+        </Tabs>
+        <div className="text-sm text-center">
+          Already have an account?{" "}
+          <Link
+            href="/auth/sign-in"
+            className="text-primary underline underline-offset-4"
+          >
+            Sign in
+          </Link>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
