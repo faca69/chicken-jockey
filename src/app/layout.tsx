@@ -22,7 +22,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} antialiased flex flex-col min-h-screen justify-center items-center mx-auto`}
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
