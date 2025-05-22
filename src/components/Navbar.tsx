@@ -1,31 +1,22 @@
-"use client";
-
-import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, User, LogOut, Settings, UserCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { signOut, useSession } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-const Navbar = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const isAuthPage = pathname?.includes("/auth");
+import { headers as getHeaders } from "next/headers";
+import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import SignOutButton from "./SignOutButton";
+// import UserAvatarNav from "./UserAvatarNav";
 
-  const { data: session } = useSession();
-
-  if (isAuthPage) return null;
+const Navbar = async () => {
+  const headers = await getHeaders();
+  const pathname = headers.get("x-pathname");
+  const session = await auth.api.getSession({ headers });
+  console.log(session);
 
   const navItems = [
     { label: "Jobs", href: "/jobs" },
@@ -56,58 +47,13 @@ const Navbar = () => {
               </Link>
             ))}
           </nav>
+          <SignOutButton />
         </div>
 
         <div className="flex items-center gap-4">
-          {session ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-10 w-10 rounded-full"
-                >
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage
-                      src="/placeholder.svg?height=36&width=36"
-                      alt="User"
-                    />
-                    <AvatarFallback>
-                      <UserCircle className="h-6 w-6" />
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end" forceMount>
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/profile"
-                    className="cursor-pointer flex w-full items-center"
-                  >
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Profile</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link
-                    href="/settings"
-                    className="cursor-pointer flex w-full items-center"
-                  >
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => signOut()}
-                  className="cursor-pointer"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {session?.user ? (
+            // <UserAvatarNav />
+            <pre>logge d in</pre>
           ) : (
             <>
               <Button asChild variant="ghost" className="hidden md:inline-flex">
@@ -143,7 +89,7 @@ const Navbar = () => {
                   </Link>
                 ))}
 
-                {session ? (
+                {session?.user ? (
                   <div className="flex flex-col gap-2 pt-4">
                     <div className="flex items-center gap-2 py-2">
                       <Avatar className="h-9 w-9">
@@ -179,7 +125,7 @@ const Navbar = () => {
                           fetchOptions: {
                             onSuccess() {
                               toast.success("Signed out successfully");
-                              router.push("/auth/sign-in");
+                              redirect("/auth/login");
                             },
                           },
                         })
