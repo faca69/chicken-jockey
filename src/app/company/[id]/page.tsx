@@ -1,5 +1,5 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { getSession } from "@/lib/auth-helpers";
+import { getCompanyById } from "@/lib/db-function";
 import { redirect } from "next/navigation";
 
 type CompanyPageProps = {
@@ -9,13 +9,13 @@ type CompanyPageProps = {
 };
 
 export default async function CompanyPage({ params }: CompanyPageProps) {
-
   const { id } = await params;
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
+  const session = await getSession();
   if (!session) redirect("/auth/sign-in");
 
-  return <div>CompanyPage - {id}</div>;
-};  
+  const company = await getCompanyById(id);
+
+  if (!company) return <p>Company not found</p>;
+
+  return <div>CompanyPage - {company?.companyName}</div>;
+}
