@@ -51,6 +51,7 @@ export default function SignInForm() {
             placeholder="john@doe.com"
             name="email"
             type="email"
+            autoComplete="email"
           />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
@@ -61,6 +62,7 @@ export default function SignInForm() {
               placeholder="••••••••"
               name="password"
               type={isPasswordVisible ? "text" : "password"}
+              autoComplete="current-password"
             />
             <Button
               type="button"

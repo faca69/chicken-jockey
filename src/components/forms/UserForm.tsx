@@ -37,7 +37,7 @@ export default function UserForm() {
     <form className="my-8 max-w-md" onSubmit={handleSubmit}>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="name"> FullName</Label>
-        <Input id="name" placeholder="John Doe" name="name" type="text" />
+        <Input id="name" placeholder="John Doe" name="name" type="text" autoComplete="name" />
       </LabelInputContainer>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="email">Email Address</Label>
@@ -46,6 +46,7 @@ export default function UserForm() {
           placeholder="john@doe.com"
           name="email"
           type="email"
+          autoComplete="email"
         />
       </LabelInputContainer>
       <LabelInputContainer className="mb-4">
@@ -56,6 +57,7 @@ export default function UserForm() {
             placeholder="••••••••"
             name="password"
             type={isPasswordVisible ? "text" : "password"}
+            autoComplete="new-password"
           />
           <Button
             type="button"

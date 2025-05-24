@@ -115,6 +115,7 @@ export default function CompanyForm() {
           placeholder="Acme Inc."
           name="companyName"
           type="text"
+          autoComplete="organization"
         />
       </LabelInputContainer>
       <LabelInputContainer className="mb-4">
@@ -124,6 +125,7 @@ export default function CompanyForm() {
           placeholder="contact@acme.com"
           name="companyEmail"
           type="email"
+          autoComplete="email"
         />
       </LabelInputContainer>
       <div className="space-y-2">
@@ -156,6 +158,7 @@ export default function CompanyForm() {
             placeholder="••••••••"
             name="password"
             type={isPasswordVisible ? "text" : "password"}
+            autoComplete="new-password"
           />
           <Button
             type="button"

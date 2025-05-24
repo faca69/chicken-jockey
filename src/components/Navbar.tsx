@@ -1,165 +1,180 @@
-"use client";
+"use client"
 
-import Link from "next/link";
-import { Menu, User, LogOut, Settings, UserCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { signOut, useSession } from "@/lib/auth-client";
-import { toast } from "sonner";
-import { useRouter, usePathname } from "next/navigation";
-import UserAvatarNav from "./UserAvatarNav";
+import Link from "next/link"
+import { LogOut, Settings, User } from "lucide-react"
+import { signOut, useSession } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
 
-const Navbar = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { data: session, isPending } = useSession();
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { toast } from "sonner"
 
-  const navItems = [
-    { label: "Jobs", href: "/jobs" },
-    { label: "Companies", href: "/companies" },
-  ];
+export default function Navbar() {
+  const { data: session } = useSession()
+  const router = useRouter()
+  const pfpPlaceholder = "/user-placeholder.jpg"
 
   const handleSignOut = async () => {
-    await signOut({
-      fetchOptions: {
-        onSuccess() {
-          toast.success("Signed out successfully");
-          router.push("/auth/sign-in");
-        },
-        onError(context) {
-          toast.error(context.error.message);
-        },
-      },
-    });
+     await signOut({
+       fetchOptions: {
+         onSuccess() {
+           toast.success("Signed out successfully");
+           router.push("/auth/sign-in");
+         },
+         onError(context) {
+           toast.error(context.error.message);
+         },
+       },
+     });
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-6 md:gap-8">
-          <Link href="/" className="font-semibold text-xl">
-            Frontend.mk
-          </Link>
+    <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          <div className="flex items-center">
+            <Link href="/">
+              <h1 className="text-2xl font-bold text-primary">Frontend.mk</h1>
+            </Link>
+          </div>
 
-          <nav className="hidden md:flex items-center gap-6">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  pathname === item.href
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                )}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        <div className="flex items-center gap-4">
-          {isPending ? (
-            <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
-          ) : session?.user ? (
-            <UserAvatarNav />
-          ) : (
-            <>
-              <Button asChild variant="ghost" className="hidden md:inline-flex">
-                <Link href="/auth/sign-in">Sign In</Link>
-              </Button>
-              <Button asChild className="hidden md:inline-flex">
-                <Link href="/auth/sign-up">Sign Up</Link>
-              </Button>
-            </>
-          )}
-
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-                <span className="sr-only">Toggle menu</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right">
-              <div className="flex flex-col gap-4 py-4">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      "text-sm font-medium transition-colors hover:text-primary",
-                      pathname === item.href
-                        ? "text-primary"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-
-                {isPending ? (
-                  <div className="flex items-center gap-2 py-2">
-                    <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
-                    <div className="h-4 w-20 animate-pulse bg-muted rounded" />
-                  </div>
-                ) : session?.user ? (
-                  <div className="flex flex-col gap-2 pt-4">
-                    <div className="flex items-center gap-2 py-2">
-                      <Avatar className="h-9 w-9">
-                        <AvatarImage
-                          src="/placeholder.svg?height=36&width=36"
-                          alt="User"
-                        />
-                        <AvatarFallback>
-                          <UserCircle className="h-6 w-6" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <span className="font-medium">{session.user.name || "Your Account"}</span>
-                    </div>
-                    <Link
-                      href="/profile"
-                      className="flex items-center gap-2 text-sm py-2"
-                    >
-                      <User className="h-4 w-4" />
-                      Profile
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="flex items-center gap-2 text-sm py-2"
-                    >
-                      <Settings className="h-4 w-4" />
-                      Settings
-                    </Link>
-                    <Button
-                      variant="destructive"
-                      className="mt-2"
-                      onClick={handleSignOut}
-                    >
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Log out
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2 pt-4">
-                    <Button asChild variant="outline">
-                      <Link href="/auth/sign-in">Sign In</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link href="/auth/sign-up">Sign Up</Link>
-                    </Button>
-                  </div>
-                )}
+          <div className="hidden md:flex items-center space-x-6">
+            <Button variant="ghost" className="text-foreground hover:text-primary" asChild>
+              <Link href="/companies">Companies</Link>
+            </Button>
+            <Button variant="ghost" className="text-foreground hover:text-primary" asChild>
+              <Link href="/jobs">Jobs</Link>
+            </Button>
+            
+            {!session?.user ? (
+              <div className="flex items-center space-x-2">
+                <Button variant="outline" asChild>
+                  <Link href="/auth/sign-in">Sign In</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/auth/sign-up">Sign Up</Link>
+                </Button>
               </div>
-            </SheetContent>
-          </Sheet>
+            ) : (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={session?.user.image || pfpPlaceholder} alt={session?.user.name || "User"} />
+                      <AvatarFallback>
+                        {session?.user.name?.charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56 bg-background" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{session?.user.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {session?.user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="/profile" className="cursor-pointer">
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link href="/settings" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+          </div>
+
+          <div className="md:hidden">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <div className="flex flex-col space-y-1">
+                    <div className="w-4 h-0.5 bg-current"></div>
+                    <div className="w-4 h-0.5 bg-current"></div>
+                    <div className="w-4 h-0.5 bg-current"></div>
+                  </div>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 bg-background" align="end">
+                <DropdownMenuItem asChild>
+                  <Link href="/companies">Companies</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/jobs">Jobs</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {!session?.user ? (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link href="/auth/sign-in">Sign In</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/auth/sign-up">Sign Up</Link>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <DropdownMenuLabel>
+                      <div className="flex items-center space-x-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={session?.user.image || pfpPlaceholder} alt={session?.user.name || "User"} />
+                          <AvatarFallback>
+                            {session?.user.name?.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="text-sm font-medium">{session?.user.name}</p>
+                          <p className="text-xs text-muted-foreground">{session?.user.email}</p>
+                        </div>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings">
+                        <Settings className="mr-2 h-4 w-4" />
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign out
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
-    </header>
-  );
-};
-
-export default Navbar;
+    </nav>
+  )
+}
