@@ -22,6 +22,9 @@ export default function Navbar() {
   const router = useRouter()
   const pfpPlaceholder = "/user-placeholder.jpg"
 
+  const isUser = session?.user?.role === "USER"
+  const profileLink = isUser ? `/user/${session?.user?.id}` : `/company/${session?.user?.id}`
+
   const handleSignOut = async () => {
      await signOut({
        fetchOptions: {
@@ -86,7 +89,7 @@ export default function Navbar() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link href="/profile" className="cursor-pointer">
+                    <Link href={profileLink} className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </Link>
