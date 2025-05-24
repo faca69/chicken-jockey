@@ -9,7 +9,7 @@ export default async function Profile() {
 
   if (!session) redirect("/auth/sign-in");
   return (
-    <div>
+    <div className="bg-red-400">
       <h1>Profile</h1>
 
       <pre>{JSON.stringify(session, null, 2)}</pre>
