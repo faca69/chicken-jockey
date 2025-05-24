@@ -4,6 +4,7 @@ import { auth, ErrorCode } from "@/lib/auth";
 import { headers } from "next/headers";
 import { APIError } from "better-auth/api";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 export async function signInFnction(formData: FormData) {
   const email = formData.get("email") as string;
@@ -21,6 +22,7 @@ export async function signInFnction(formData: FormData) {
       },
     });
 
+    revalidatePath("/", "layout");
     return { error: null };
   } catch (err) {
     if (err instanceof APIError) {

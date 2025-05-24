@@ -4,35 +4,36 @@ import { signOut } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 function SignOutButton() {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
 
   const handleSignOut = async () => {
-    await signOut({
-      fetchOptions: {
-        onError(context) {
-          toast.error(context.error.message);
+    setIsPending(true);
+    try {
+      await signOut({
+        fetchOptions: {
+          onError(context) {
+            toast.error(context.error.message);
+          },
+          onSuccess() {
+            toast.success("Signed out successfully");
+            router.push("/auth/sign-in");
+            router.refresh();
+          },
         },
-        onSuccess() {
-          toast.success("Signed out successfully");
-          router.push("/auth/sign-in");
-        },
-        onRequest() {
-          setIsPending(true);
-        },
-        onResponse() {
-          setIsPending(false);
-        },
-      },
-    });
+      });
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (
-    <button onClick={handleSignOut} disabled={isPending}>
+    <Button onClick={handleSignOut} disabled={isPending} variant="destructive">
       {isPending ? "Signing Out..." : "Sign Out"}
-    </button>
+    </Button>
   );
 }
 

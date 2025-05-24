@@ -3,6 +3,7 @@
 import { auth, ErrorCode } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { APIError } from "better-auth/api";
+import { revalidatePath } from "next/cache";
 
 export async function userSignUpFunction(formData: FormData) {
   const name = formData.get("name") as string;
@@ -31,6 +32,7 @@ export async function userSignUpFunction(formData: FormData) {
       },
     });
 
+    revalidatePath("/", "layout");
     return { error: null };
   } catch (err) {
     if (err instanceof APIError) {

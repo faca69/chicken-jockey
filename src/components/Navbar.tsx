@@ -1,27 +1,39 @@
+"use client";
+
 import Link from "next/link";
 import { Menu, User, LogOut, Settings, UserCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { signOut } from "@/lib/auth-client";
+import { signOut, useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
-import { headers as getHeaders } from "next/headers";
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import SignOutButton from "./SignOutButton";
-// import UserAvatarNav from "./UserAvatarNav";
+import { useRouter, usePathname } from "next/navigation";
+import UserAvatarNav from "./UserAvatarNav";
 
-const Navbar = async () => {
-  const headers = await getHeaders();
-  const pathname = headers.get("x-pathname");
-  const session = await auth.api.getSession({ headers });
-  console.log(session);
+const Navbar = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { data: session, isPending } = useSession();
 
   const navItems = [
     { label: "Jobs", href: "/jobs" },
     { label: "Companies", href: "/companies" },
   ];
+
+  const handleSignOut = async () => {
+    await signOut({
+      fetchOptions: {
+        onSuccess() {
+          toast.success("Signed out successfully");
+          router.push("/auth/sign-in");
+        },
+        onError(context) {
+          toast.error(context.error.message);
+        },
+      },
+    });
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4">
@@ -47,20 +59,20 @@ const Navbar = async () => {
               </Link>
             ))}
           </nav>
-          <SignOutButton />
         </div>
 
         <div className="flex items-center gap-4">
-          {session?.user ? (
-            // <UserAvatarNav />
-            <pre>logge d in</pre>
+          {isPending ? (
+            <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+          ) : session?.user ? (
+            <UserAvatarNav />
           ) : (
             <>
               <Button asChild variant="ghost" className="hidden md:inline-flex">
-                <Link href="/auth/login">Sign In</Link>
+                <Link href="/auth/sign-in">Sign In</Link>
               </Button>
               <Button asChild className="hidden md:inline-flex">
-                <Link href="/auth/register">Register</Link>
+                <Link href="/auth/sign-up">Sign Up</Link>
               </Button>
             </>
           )}
@@ -89,7 +101,12 @@ const Navbar = async () => {
                   </Link>
                 ))}
 
-                {session?.user ? (
+                {isPending ? (
+                  <div className="flex items-center gap-2 py-2">
+                    <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+                    <div className="h-4 w-20 animate-pulse bg-muted rounded" />
+                  </div>
+                ) : session?.user ? (
                   <div className="flex flex-col gap-2 pt-4">
                     <div className="flex items-center gap-2 py-2">
                       <Avatar className="h-9 w-9">
@@ -101,7 +118,7 @@ const Navbar = async () => {
                           <UserCircle className="h-6 w-6" />
                         </AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">Your Account</span>
+                      <span className="font-medium">{session.user.name || "Your Account"}</span>
                     </div>
                     <Link
                       href="/profile"
@@ -120,16 +137,7 @@ const Navbar = async () => {
                     <Button
                       variant="destructive"
                       className="mt-2"
-                      onClick={() =>
-                        signOut({
-                          fetchOptions: {
-                            onSuccess() {
-                              toast.success("Signed out successfully");
-                              redirect("/auth/login");
-                            },
-                          },
-                        })
-                      }
+                      onClick={handleSignOut}
                     >
                       <LogOut className="mr-2 h-4 w-4" />
                       Log out
@@ -138,10 +146,10 @@ const Navbar = async () => {
                 ) : (
                   <div className="flex flex-col gap-2 pt-4">
                     <Button asChild variant="outline">
-                      <Link href="/auth/login">Sign In</Link>
+                      <Link href="/auth/sign-in">Sign In</Link>
                     </Button>
                     <Button asChild>
-                      <Link href="/auth/register">Register</Link>
+                      <Link href="/auth/sign-up">Sign Up</Link>
                     </Button>
                   </div>
                 )}

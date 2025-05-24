@@ -5,7 +5,6 @@ import { Input } from "../ui/input";
 import LabelInputContainer from "@/components/LabelInputContainer";
 import { toast } from "sonner";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { signInFnction } from "@/actions/sign-in.action";
 import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
@@ -15,7 +14,6 @@ import Link from "next/link";
 export default function SignInForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const router = useRouter();
 
   const loadingSignIn = <span className="animate-pulse">Signing In...</span>;
 
@@ -31,7 +29,7 @@ export default function SignInForm() {
       setIsPending(false);
     } else {
       toast.success("Signed in successfully");
-      router.push("/profile");
+      window.location.href = "/profile";
     }
 
     setIsPending(false);

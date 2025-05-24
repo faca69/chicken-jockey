@@ -71,7 +71,6 @@ import { Input } from "../ui/input";
 import LabelInputContainer from "@/components/LabelInputContainer";
 import { toast } from "sonner";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import BottomGradient from "../BottomGradient";
@@ -87,7 +86,6 @@ import { companySignUpFunction } from "@/actions/company-sign-up.action";
 export default function CompanyForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const router = useRouter();
 
   const loadingText = <span className="animate-pulse">Signing Up...</span>;
 
@@ -103,7 +101,7 @@ export default function CompanyForm() {
       setIsPending(false);
     } else {
       toast.success("Sign up successful");
-      router.push("/auth/sign-up/success");
+      window.location.href = "/auth/sign-up/success";
     }
 
     setIsPending(false);
