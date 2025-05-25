@@ -37,7 +37,13 @@ export default function UserForm() {
     <form className="my-8 max-w-md" onSubmit={handleSubmit}>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="name"> FullName</Label>
-        <Input id="name" placeholder="John Doe" name="name" type="text" autoComplete="name" />
+        <Input
+          id="name"
+          placeholder="John Doe"
+          name="name"
+          type="text"
+          autoComplete="name"
+        />
       </LabelInputContainer>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="email">Email Address</Label>
