@@ -9,6 +9,15 @@ export const getCompanyById = async (id: string) => {
   return company;
 };
 
+export const getCompanyByUserId = async (userId: string) => {
+  const company = await prisma.company.findUnique({
+    where: {
+      userId,
+    },
+  });
+  return company;
+};
+
 export const getUserById = async (id: string) => {
   const user = await prisma.user.findUnique({
     where: {

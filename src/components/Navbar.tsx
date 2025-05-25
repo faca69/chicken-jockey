@@ -20,7 +20,6 @@ import { toast } from "sonner";
 export default function Navbar() {
   const { data: session } = useSession();
   const router = useRouter();
-  const pfpPlaceholder = "/user-placeholder.jpg";
 
   const isUser = session?.user?.role === "USER";
   const profileLink = isUser
@@ -91,7 +90,7 @@ export default function Navbar() {
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarImage
-                          src={session?.user.image || pfpPlaceholder}
+                          src={session?.user.image || ""}
                           alt={session?.user.name || "User"}
                         />
                         <AvatarFallback>
@@ -181,7 +180,7 @@ export default function Navbar() {
                       <div className="flex items-center space-x-2">
                         <Avatar className="h-8 w-8">
                           <AvatarImage
-                            src={session?.user.image || pfpPlaceholder}
+                            src={session?.user.image || ""}
                             alt={session?.user.name || "User"}
                           />
                           <AvatarFallback>
@@ -200,7 +199,7 @@ export default function Navbar() {
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile">
+                      <Link href={profileLink}>
                         <User className="mr-2 h-4 w-4" />
                         Profile
                       </Link>

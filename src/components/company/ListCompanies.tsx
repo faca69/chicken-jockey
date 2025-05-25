@@ -1,4 +1,4 @@
-import { getCompanies } from "@/lib/db-function";
+import { getCompanies } from "@/lib/db-functions";
 import CompanyCard from "./CompanyCard";
 
 const ListCompanies = async () => {
