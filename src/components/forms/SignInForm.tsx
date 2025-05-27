@@ -29,7 +29,7 @@ export default function SignInForm() {
       setIsPending(false);
     } else {
       toast.success("Signed in successfully");
-      window.location.href = "/profile";
+      window.location.href = "/jobs";
     }
 
     setIsPending(false);

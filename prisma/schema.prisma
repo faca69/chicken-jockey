@@ -32,9 +32,13 @@ model User {
 }
 
 model Jobseeker {
-  id       String @id @default(uuid())
-  userId   String @unique
+  id       String  @id @default(uuid())
+  userId   String  @unique
   fullName String
+  email    String?
+  phone    String?
+  location String?
+  website  String?
 
   //relation
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
