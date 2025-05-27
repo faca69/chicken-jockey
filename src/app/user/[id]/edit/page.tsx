@@ -18,6 +18,8 @@ export default async function UserEditPage({ params }: UserPageProps) {
     },
   });
 
+  
+
   console.log(userByUserID);
   return (
     <div>

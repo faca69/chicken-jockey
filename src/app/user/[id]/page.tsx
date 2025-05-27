@@ -22,14 +22,17 @@ export default async function UserPage({ params }: UserPageProps) {
       userId: id as string,
     },
   });
-
+  const isUserHimself = session?.user?.id === user?.userId;
+  console.log(isUserHimself);
   if (!session) redirect("/auth/sign-in");
 
   return (
     <div>
-      <Link href={`/user/${id}/edit`}>
-        <Button>Edit Profile</Button>
-      </Link>
+      {isUserHimself && (
+        <Link href={`/user/${id}/edit`}>
+          <Button>Edit Profile</Button>
+        </Link>
+      )}
       <h1>User ID: {user?.userId}</h1>
       <h1>User Name: {user?.fullName}</h1>
     </div>
