@@ -37,6 +37,6 @@ export async function createJob(formData: FormData) {
     },
   });
 
-  revalidatePath("/jobs");
+  revalidatePath("/jobs", "page");
   redirect("/jobs");
 }
