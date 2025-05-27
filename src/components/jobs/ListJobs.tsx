@@ -14,10 +14,14 @@ const ListJobs = () => {
     select: (data) => data || [],
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError) return <div>Error loading jobs</div>;
+  if (isLoading) return <div className="text-center py-8">Loading...</div>;
+  if (isError)
+    return (
+      <div className="text-center py-8 text-red-500">Error loading jobs</div>
+    );
+
   return (
-    <div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {jobs?.map((job) => (
         <JobCard key={job.id} job={job} />
       ))}
