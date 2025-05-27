@@ -1,14 +1,30 @@
 "use client";
 import JobCard from "./JobCard";
 import { useQuery } from "@tanstack/react-query";
-import { Job } from "@/generated/prisma";
+import { useSession } from "@/lib/auth-client";
+
+interface JobWithCompany {
+  id: string;
+  title: string;
+  description: string;
+  companyId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  company: {
+    id: string;
+    userId: string;
+    companyName: string;
+  };
+}
 
 const ListJobs = () => {
+  const { data: session } = useSession();
+
   const {
     data: jobs,
     isLoading,
     isError,
-  } = useQuery<Job[]>({
+  } = useQuery<JobWithCompany[]>({
     queryKey: ["jobs"],
     queryFn: () => fetch("/api/jobs").then((res) => res.json()),
     select: (data) => data || [],
@@ -23,7 +39,7 @@ const ListJobs = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {jobs?.map((job) => (
-        <JobCard key={job.id} job={job} />
+        <JobCard key={job.id} job={job} currentUserId={session?.user?.id} />
       ))}
     </div>
   );
