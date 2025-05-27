@@ -67,14 +67,44 @@ model Company {
   @@map("companies")
 }
 
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  INTERNSHIP
+}
+
+enum Experience {
+  ENTRY_LEVEL
+  MID_LEVEL
+  SENIOR_LEVEL
+}
+
+enum WorkFrom {
+  REMOTE
+  ON_SITE
+  HYBRID
+}
+
 model Job {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                  String     @id @default(uuid())
+  title               String
+  description         String
+  location            String
+  salary              String?
+  benefits            String?
+  experience          Experience
+  jobType             JobType
+  workFrom            WorkFrom
+  urgent              Boolean    @default(false)
+  applicationDeadline DateTime?
+  contactEmail        String?
+  contactPhone        String?
+  workingHours        String?
+
+  companyId String
+  company   Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("jobs")
 }
