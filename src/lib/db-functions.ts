@@ -31,3 +31,25 @@ export const getCompanies = async () => {
   const companies = await prisma.company.findMany();
   return companies;
 };
+
+export const getCompaniesJobs = async (id: string) => {
+  const jobs = await prisma.job.findMany({
+    where: {
+      companyId: id,
+    },
+    include: {
+      company: {
+        select: {
+          companyName: true,
+          id: true,
+          userId: true,
+          industry: true,
+          website: true,
+          location: true,
+          email: true,
+        },
+      },
+    },
+  });
+  return jobs;
+};
