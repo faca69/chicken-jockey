@@ -1,10 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { LogOut, Settings, User } from "lucide-react";
+import {
+  LogOut,
+  Settings,
+  User,
+  Monitor,
+  Sun,
+  Moon,
+  Check,
+} from "lucide-react";
 import { signOut, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-
+import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,6 +21,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+  DropdownMenuPortal,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "sonner";
@@ -20,6 +32,7 @@ import { toast } from "sonner";
 export default function Navbar() {
   const { data: session } = useSession();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
 
   const isUser = session?.user?.role === "USER";
   const profileLink = isUser
@@ -127,6 +140,37 @@ export default function Navbar() {
                         <span>Settings</span>
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        <Monitor className="mr-2 h-4 w-4" />
+                        <span className="ml-2">Theme</span>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuItem onClick={() => setTheme("system")}>
+                            <Monitor className="mr-2 h-4 w-4" />
+                            System default
+                            {theme === "system" && (
+                              <Check className="ms-2 h-4 w-4" />
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setTheme("light")}>
+                            <Sun className="mr-2 h-4 w-4" />
+                            Light
+                            {theme === "light" && (
+                              <Check className="ms-2 h-4 w-4" />
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setTheme("dark")}>
+                            <Moon className="mr-2 h-4 w-4" />
+                            Dark
+                            {theme === "dark" && (
+                              <Check className="ms-2 h-4 w-4" />
+                            )}
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleSignOut}
@@ -211,6 +255,37 @@ export default function Navbar() {
                         Settings
                       </Link>
                     </DropdownMenuItem>
+                    <DropdownMenuSub>
+                      <DropdownMenuSubTrigger>
+                        <Monitor className="mr-2 h-4 w-4" />
+                        <span className="ml-2">Theme</span>
+                      </DropdownMenuSubTrigger>
+                      <DropdownMenuPortal>
+                        <DropdownMenuSubContent>
+                          <DropdownMenuItem onClick={() => setTheme("system")}>
+                            <Monitor className="mr-2 h-4 w-4" />
+                            System default
+                            {theme === "system" && (
+                              <Check className="ms-2 h-4 w-4" />
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setTheme("light")}>
+                            <Sun className="mr-2 h-4 w-4" />
+                            Light
+                            {theme === "light" && (
+                              <Check className="ms-2 h-4 w-4" />
+                            )}
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setTheme("dark")}>
+                            <Moon className="mr-2 h-4 w-4" />
+                            Dark
+                            {theme === "dark" && (
+                              <Check className="ms-2 h-4 w-4" />
+                            )}
+                          </DropdownMenuItem>
+                        </DropdownMenuSubContent>
+                      </DropdownMenuPortal>
+                    </DropdownMenuSub>
                     <DropdownMenuItem
                       onClick={handleSignOut}
                       variant="destructive"
