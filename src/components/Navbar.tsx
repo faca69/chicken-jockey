@@ -59,24 +59,24 @@ export default function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/">
-              <h1 className="text-2xl font-bold text-primary">Frontend.mk</h1>
+              <h1 className="text-2xl font-bold text-primary ">Frontend.mk</h1>
             </Link>
           </div>
 
-          <div className="hidden md:flex items-center space-x-6">
-            <Button
-              variant="ghost"
-              className="text-foreground hover:text-primary"
-              asChild
-            >
-              <Link href="/companies">Companies</Link>
-            </Button>
+          <div className="hidden md:flex items-center space-x-2">
             <Button
               variant="ghost"
               className="text-foreground hover:text-primary"
               asChild
             >
               <Link href="/jobs">Jobs</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              className="text-foreground hover:text-primary"
+              asChild
+            >
+              <Link href="/companies">Companies</Link>
             </Button>
 
             {!session?.user ? (
