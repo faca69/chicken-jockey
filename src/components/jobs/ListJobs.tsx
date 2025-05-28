@@ -2,6 +2,7 @@
 import JobCard from "./JobCard";
 import { useQuery } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
+import { Experience, JobType, WorkFrom } from "@/generated/prisma";
 
 interface JobWithCompany {
   id: string;
@@ -10,6 +11,18 @@ interface JobWithCompany {
   companyId: string;
   createdAt: Date;
   updatedAt: Date;
+  location: string;
+  salary: string;
+  benefits: string;
+  experience: Experience;
+  jobType: JobType;
+  contactEmail: string;
+  contactPhone: string;
+  workingHours: string;
+  workFrom: WorkFrom;
+  jobCategory: string;
+  urgent: boolean;
+  applicationDeadline: Date;
   company: {
     id: string;
     userId: string;

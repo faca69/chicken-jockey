@@ -11,6 +11,7 @@ export async function editUserAction(formData: FormData) {
   const email = formData.get("email") as string;
   const phone = formData.get("phone") as string;
   const location = formData.get("location") as string;
+  const website = formData.get("website") as string;
   const id = formData.get("id") as string;
 
   await prisma.jobseeker.update({
@@ -22,6 +23,7 @@ export async function editUserAction(formData: FormData) {
       email,
       phone,
       location,
+      website,
     },
   });
 
