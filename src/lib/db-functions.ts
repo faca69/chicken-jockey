@@ -53,3 +53,15 @@ export const getCompaniesJobs = async (id: string) => {
   });
   return jobs;
 };
+
+export const filterJobsByName = async (name: string) => {
+  const jobs = await prisma.job.findMany({
+    where: {
+      title: {
+        contains: name,
+        mode: "insensitive",
+      },
+    },
+  });
+  return jobs;
+};

@@ -130,6 +130,7 @@ export default function Navbar() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={handleSignOut}
+                      variant="destructive"
                       className="cursor-pointer"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
@@ -212,6 +213,7 @@ export default function Navbar() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={handleSignOut}
+                      variant="destructive"
                       className="cursor-pointer"
                     >
                       <LogOut className="mr-2 h-4 w-4" />
