@@ -3,7 +3,8 @@
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { JobsWithComapnyInfoForJobCards } from "@/lib/types";
+import { JobsWithComapnyInfoForJobCards } from "@/common/types/job.types";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface JobcardProps {
   job: JobsWithComapnyInfoForJobCards;
@@ -39,6 +40,17 @@ function JobCard({ job, currentUserId }: JobcardProps) {
           >
             <span className="text-sm text-gray-500 font-medium">
               {job.company.companyName}
+            </span>
+            <span>
+              <Avatar className="h-10 w-10">
+                <AvatarImage
+                  src={job.company.companyLogo || ""}
+                  alt={`${job.company.companyName} logo`}
+                />
+                <AvatarFallback>
+                  {job.company.companyName.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
             </span>
           </Link>
           <span className="text-sm text-blue-600 font-semibold">

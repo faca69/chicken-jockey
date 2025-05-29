@@ -50,7 +50,7 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { jobFormSchema } from "@/zod/job-form.schema";
-import { useSubmitJobMutation } from "@/mutations/create-job.mutation";
+import { useSubmitJobMutation } from "@/mutations/jobs/create-job.mutation";
 import { useRouter } from "next/navigation";
 
 const CreateJobForm = () => {

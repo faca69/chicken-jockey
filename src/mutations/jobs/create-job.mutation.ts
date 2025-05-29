@@ -1,4 +1,4 @@
-import { createJob } from "@/actions/create-job.action";
+import { createJob } from "@/actions/jobs/create-job.action";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 

@@ -1,6 +1,6 @@
 import { getSession } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
-import { jobDataInclude, JobsPage } from "@/lib/types";
+import { jobDataInclude, JobsPage } from "@/common/types/job.types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

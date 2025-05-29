@@ -3,7 +3,7 @@ import JobCard from "./JobCard";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
 import axios from "axios";
-import { JobsPage } from "@/lib/types";
+import { JobsPage } from "@/common/types/job.types";
 import InfiniteScrollContainer from "../InfiniteScrollContainer";
 import { Loader2 } from "lucide-react";
 

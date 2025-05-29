@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { prisma } from "@/lib/prisma";
-import { editJob } from "@/actions/edit-job.action";
+import { editJob } from "@/actions/jobs/edit-job.action";
 
 type EditJobPageProps = {
   params: {
