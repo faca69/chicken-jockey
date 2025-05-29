@@ -2,8 +2,6 @@
 
 import { getSession } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { JobType } from "@/generated/prisma";
 import { Experience } from "@/generated/prisma";
 import { WorkFrom } from "@/generated/prisma";
@@ -31,12 +29,8 @@ export async function createJob(formData: FormData) {
 
   const session = await getSession();
 
-  if (!title || !description) {
-    throw new Error("Title and description are required");
-  }
-
   if (!session?.user?.id) {
-    throw new Error("You must be logged in to create a job");
+    throw new Error("unauthorized");
   }
 
   const company = await prisma.company.findUnique({
@@ -45,8 +39,8 @@ export async function createJob(formData: FormData) {
     },
   });
 
-  if (!company) {
-    throw new Error("You must have a company profile to create jobs");
+  if (!company?.id) {
+    throw new Error("Company not found");
   }
 
   await prisma.job.create({
@@ -67,7 +61,4 @@ export async function createJob(formData: FormData) {
       workingHours,
     },
   });
-
-  revalidatePath("/jobs", "page");
-  redirect("/jobs");
 }
