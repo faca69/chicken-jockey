@@ -10,10 +10,10 @@
 // import type { JobsWithComapnyInfoForJobCards } from "@/common/types/job.types";
 // import { ArrowUpRight, Briefcase, MapPin, PenLine } from "lucide-react";
 
-interface JobcardProps {
-  job: JobsWithComapnyInfoForJobCards;
-  currentUserId: string;
-}
+// interface JobcardProps {
+//   job: JobsWithComapnyInfoForJobCards;
+//   currentUserId: string;
+// }
 
 // function JobCard({ job, currentUserId }: JobcardProps) {
 //   const router = useRouter();
@@ -115,26 +115,28 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { JobsWithComapnyInfoForJobCards } from "@/common/types/job.types";
-import { useRouter } from "next/router";
-import { calculateDaysRemaining } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import { calculateDaysRemaining, formatDeadline } from "@/lib/utils";
 
 interface JobCardProps {
   job: JobsWithComapnyInfoForJobCards;
   currentUserId: string;
 }
-
 export default function JobCard({ job, currentUserId }: JobCardProps) {
   const daysRemaining = calculateDaysRemaining(job.applicationDeadline);
+
+  const router = useRouter();
 
   return (
     <Card className="overflow-hidden transition-all hover:shadow-md">
       <div className="relative h-48 bg-muted">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-background/80" />
         <Image
-          src={job.image || "/placeholder.svg"}
+          src={job.company.companyLogo || "/placeholder.svg"}
           alt={`${job.company} job`}
           fill
           className="object-cover"
+          quality={40}
         />
         <div className="absolute top-4 right-4">
           <Badge
@@ -145,29 +147,22 @@ export default function JobCard({ job, currentUserId }: JobCardProps) {
             {daysRemaining <= 0 ? "Expired" : `${daysRemaining} days left`}
           </Badge>
         </div>
-        <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 rounded-full p-2 shadow-md">
-          <Image
-            src={job.image || "/placeholder.svg"}
-            alt={job.company}
-            width={40}
-            height={40}
-            className="rounded-full"
-          />
-        </div>
       </div>
       <CardContent className="pt-6">
         <h3 className="font-semibold text-xl line-clamp-1">{job.title}</h3>
-        <p className="text-muted-foreground">{job.company}</p>
+        <p className="text-muted-foreground">{job.company.companyName}</p>
         <div className="flex items-center mt-2 text-sm text-muted-foreground">
           <CalendarIcon className="h-4 w-4 mr-1" />
-          <span>Apply by {formatDeadline(job.deadline)}</span>
+          <span>Apply by {formatDeadline(job.applicationDeadline)}</span>
         </div>
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
         <Button variant="outline" size="sm">
           Save
         </Button>
-        <Button size="sm">Apply Now</Button>
+        <Button size="sm" onClick={() => router.push(`/jobs/${job.id}`)}>
+          View
+        </Button>
       </CardFooter>
     </Card>
   );

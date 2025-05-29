@@ -16,7 +16,7 @@ export function VALID_DOMAINS() {
 }
 
 // Format the deadline date
-export const formatDeadline = (dateString: string) => {
+export const formatDeadline = (dateString: Date) => {
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -26,7 +26,7 @@ export const formatDeadline = (dateString: string) => {
 };
 
 // Calculate days remaining until deadline
-export const calculateDaysRemaining = (deadline: string) => {
+export const calculateDaysRemaining = (deadline: Date) => {
   const today = new Date();
   const deadlineDate = new Date(deadline);
   const diffTime = deadlineDate.getTime() - today.getTime();

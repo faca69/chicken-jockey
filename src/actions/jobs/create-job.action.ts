@@ -22,9 +22,7 @@ export async function createJob(formData: FormData) {
   const contactPhone = formData.get("contactPhone") as string;
   const workingHours = formData.get("workingHours") as string;
 
-  const applicationDeadline = applicationDeadlineString
-    ? new Date(applicationDeadlineString)
-    : null;
+  const applicationDeadline = new Date(applicationDeadlineString);
 
   const session = await getSession();
 
