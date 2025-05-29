@@ -1,63 +1,67 @@
 "use client";
 import JobCard from "./JobCard";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
-import { Experience, JobType, WorkFrom } from "@/generated/prisma";
-
-interface JobWithCompany {
-  id: string;
-  title: string;
-  description: string;
-  companyId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  location: string;
-  salary: string;
-  benefits: string;
-  experience: Experience;
-  jobType: JobType;
-  contactEmail: string;
-  contactPhone: string;
-  workingHours: string;
-  workFrom: WorkFrom;
-  jobCategory: string;
-  urgent: boolean;
-  applicationDeadline: Date;
-  company: {
-    id: string;
-    userId: string;
-    companyName: string;
-  };
-}
+import axios from "axios";
+import { JobsPage } from "@/lib/types";
+import InfiniteScrollContainer from "../InfiniteScrollContainer";
+import { Loader2 } from "lucide-react";
 
 const ListJobs = () => {
   const { data: session } = useSession();
 
   const {
-    data: jobs,
-    isLoading,
-    isError,
-  } = useQuery<JobWithCompany[]>({
-    queryKey: ["jobs"],
-    queryFn: () => fetch("/api/jobs").then((res) => res.json()),
-    select: (data) => data || [],
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+  } = useInfiniteQuery({
+    queryKey: ["job-feed"],
+    queryFn: ({ pageParam }) =>
+      axios.get<JobsPage>("/api/jobs", {
+        params: pageParam ? { cursor: pageParam } : {},
+      }),
+    initialPageParam: null as string | null,
+    getNextPageParam: (lastPage) => lastPage.data.nextCursor,
   });
 
-  if (isLoading) return <div className="text-center py-8">Loading...</div>;
-  if (isError)
+  const jobs = data?.pages.flatMap((page) => page.data.jobs) || [];
+
+  if (status === "pending")
+    return <div className="text-center py-8">Loading...</div>;
+
+  if (status === "success" && !jobs.length && !hasNextPage)
     return (
-      <div className="text-center py-8 text-red-500">Error loading jobs</div>
+      <p className="text-center text-muted-foreground">
+        No one has posted anything yet.
+      </p>
+    );
+
+  if (status === "error")
+    return (
+      <p className="text-center text-destructive">
+        An error occurred while loading jobs.
+      </p>
     );
 
   return (
-    <div>
-      <h1>Jobs</h1>
+    <InfiniteScrollContainer
+      className="space-y-5"
+      onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
+    >
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {jobs?.map((job) => (
-          <JobCard key={job.id} job={job} currentUserId={session?.user?.id} />
+          <JobCard
+            key={job.id}
+            job={job}
+            currentUserId={session?.user?.id || ""}
+          />
         ))}
       </div>
-    </div>
+      {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
+    </InfiniteScrollContainer>
   );
 };
 

@@ -1,23 +1,36 @@
+import { getSession } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { jobDataInclude, JobsPage } from "@/lib/types";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+    const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
+    const pageSize = 12;
+
+    const session = await getSession();
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const jobs = await prisma.job.findMany({
-      include: {
-        company: {
-          select: {
-            id: true,
-            userId: true,
-            companyName: true,
-          },
-        },
-      },
+      include: jobDataInclude,
       orderBy: {
         createdAt: "desc",
       },
+      take: pageSize + 1,
+      cursor: cursor ? { id: cursor } : undefined,
     });
-    return NextResponse.json(jobs);
+
+    const nextCursor = jobs.length > pageSize ? jobs[pageSize].id : null;
+
+    const data: JobsPage = {
+      jobs: jobs.slice(0, pageSize),
+      nextCursor,
+    };
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching jobs:", error);
     return NextResponse.json(
