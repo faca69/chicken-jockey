@@ -21,7 +21,6 @@ export const jobFormSchema = z.object({
   workFrom: z.enum(["REMOTE", "ON_SITE", "HYBRID"], {
     required_error: "Please select work arrangement",
   }),
-  urgent: z.boolean().default(false),
   applicationDeadline: z.string().optional(),
   contactEmail: z.string().email("Please enter a valid email address"),
   contactPhone: z.string().optional(),

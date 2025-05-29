@@ -72,15 +72,14 @@ model Job {
   description         String
   location            String
   salary              String?
-  benefits            String?
+  benefits            String
   experience          Experience
   jobType             JobType
   workFrom            WorkFrom
-  urgent              Boolean?
-  applicationDeadline DateTime?
-  contactEmail        String?
-  contactPhone        String?
-  workingHours        String?
+  applicationDeadline DateTime
+  contactEmail        String
+  contactPhone        String
+  workingHours        String
   createdAt           DateTime   @default(now())
   updatedAt           DateTime   @updatedAt
 

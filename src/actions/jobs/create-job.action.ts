@@ -15,7 +15,6 @@ export async function createJob(formData: FormData) {
   const experience = formData.get("experience") as Experience;
   const jobType = formData.get("jobType") as JobType;
   const workFrom = formData.get("workFrom") as WorkFrom;
-  const urgent = Boolean(formData.get("urgent"));
   const applicationDeadlineString = formData.get(
     "applicationDeadline"
   ) as string;
@@ -54,7 +53,6 @@ export async function createJob(formData: FormData) {
       experience,
       jobType,
       workFrom,
-      urgent,
       applicationDeadline,
       contactEmail,
       contactPhone,

@@ -30,7 +30,6 @@ const JobPage = async ({ params }: JobPageProps) => {
       <h1> JOB TYPE: {singleJob.jobType}</h1>
       <h1> JOB EXPERIENCE: {singleJob.experience}</h1>
       <h1> JOB WORK FROM: {singleJob.workFrom}</h1>
-      <h1> JOB URGENT: {singleJob.urgent ? "Yes" : "No"}</h1>
       <h1>
         {" "}
         JOB APPLICATION DEADLINE:{" "}
