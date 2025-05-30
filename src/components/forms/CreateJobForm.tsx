@@ -94,7 +94,7 @@ const CreateJobForm = () => {
   };
 
   return (
-    <Card className="w-full max-w-4xl mx-auto">
+    <Card className="w-full md:w-[700px] mx-auto">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <BriefcaseIcon className="h-5 w-5" />
@@ -138,7 +138,7 @@ const CreateJobForm = () => {
                       <FormControl>
                         <Textarea
                           placeholder="Provide a detailed description of the role, responsibilities, and requirements..."
-                          className="min-h-[120px]"
+                          className="w-full min-h-[120px] resize-none"
                           {...field}
                         />
                       </FormControl>
@@ -288,8 +288,9 @@ const CreateJobForm = () => {
                       <FormLabel>Benefits & Perks</FormLabel>
                       <FormControl>
                         <Textarea
+                          rows={3}
                           placeholder="e.g. Health insurance, 401k, flexible hours..."
-                          className="min-h-[80px]"
+                          className="w-full min-h-[120px] resize-none"
                           {...field}
                         />
                       </FormControl>
