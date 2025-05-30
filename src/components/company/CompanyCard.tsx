@@ -11,10 +11,8 @@ export default function CompanyCard({
   company: CompanyWithJobCount;
 }) {
   return (
-    <Link href={`/company/${company.userId}`}>
-      <Card
-        className={`group cursor-pointer transition-all duration-200 hover:shadow-lg`}
-      >
+    <Link href={`/company/${company.userId}`} className="block max-w-[250px]">
+      <Card className="group cursor-pointer hover:shadow-lg w-full">
         <CardContent className="">
           <div className="flex flex-col items-center text-center space-y-4">
             {/* Company Logo */}
@@ -33,8 +31,8 @@ export default function CompanyCard({
             </div>
 
             {/* Company Name */}
-            <div className="space-y-1">
-              <h3 className="font-semibold text-lg md:text-xl text-foreground group-hover:text-primary transition-colors truncate">
+            <div className="space-y-1 w-full">
+              <h3 className="font-semibold text-lg md:text-xl text-foreground group-hover:text-primary transition-colors truncate w-full">
                 {company.companyName}
               </h3>
             </div>

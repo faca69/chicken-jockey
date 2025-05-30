@@ -33,8 +33,8 @@ export default function JobCard({ job, currentUserId }: JobCardProps) {
   const router = useRouter();
 
   return (
-    <Card className="overflow-hidden transition-all hover:shadow-md pt-0">
-      <div className="relative h-48 bg-muted">
+    <Card className="overflow-hidden transition-all hover:shadow-md">
+      <div className="relative h-48 bg-muted ">
         <Image
           src={job.company.companyLogo || ""}
           alt={`${job.company} job`}
