@@ -1,4 +1,5 @@
 "use client";
+
 import JobCard from "./JobCard";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";

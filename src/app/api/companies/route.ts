@@ -1,10 +1,36 @@
-import { getCompanies } from "@/lib/db-functions";
-import { NextResponse } from "next/server";
+import { CompaniesPage } from "@/common/types/company.types";
+import { getSession } from "@/lib/auth-helpers";
+import { prisma } from "@/lib/prisma";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
-    const companies = await getCompanies();
-    return NextResponse.json(companies);
+    const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
+    const pageSize = 12;
+
+    const session = await getSession();
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const companies = await prisma.company.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: pageSize + 1,
+      cursor: cursor ? { id: cursor } : undefined,
+    });
+
+    const nextCursor =
+      companies.length > pageSize ? companies[pageSize].id : null;
+
+    const data: CompaniesPage = {
+      companies: companies.slice(0, pageSize),
+      nextCursor,
+    };
+
+    return NextResponse.json(data);
   } catch (error) {
     console.error("Error fetching companies:", error);
     return NextResponse.json(
