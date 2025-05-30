@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { CalendarIcon, MapPin } from "lucide-react";
+import { CalendarIcon, Edit2, MapPin, Trash2 } from "lucide-react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { JobsWithComapnyInfoForJobCards } from "@/common/types/job.types";
 import { useRouter } from "next/navigation";
-import { calculateDaysRemaining, formatDeadline } from "@/lib/utils";
+import { calculateDaysRemaining } from "@/lib/utils";
 import { BookmarkIcon } from "lucide-react";
 
 interface JobCardProps {
@@ -14,6 +14,21 @@ interface JobCardProps {
 }
 export default function JobCard({ job, currentUserId }: JobCardProps) {
   const daysRemaining = calculateDaysRemaining(job.applicationDeadline);
+
+  const renderCompanyOnlyButtons = (
+    <>
+      {currentUserId === job.company.userId && (
+        <>
+          <Button variant="ghost" size="icon">
+            <Edit2 className="size-6" />
+          </Button>
+          <Button variant="ghost" size="icon">
+            <Trash2 className="size-6" />
+          </Button>
+        </>
+      )}
+    </>
+  );
 
   const router = useRouter();
 
@@ -48,7 +63,13 @@ export default function JobCard({ job, currentUserId }: JobCardProps) {
         </div>
       </CardContent>
       <CardFooter className="flex justify-between border-t">
-        <BookmarkIcon className="size-6" />
+        <div className="flex items-center ">
+          <Button variant="ghost" size="icon">
+            <BookmarkIcon className="size-6" />
+          </Button>
+          {renderCompanyOnlyButtons}
+        </div>
+
         <Button size="sm" onClick={() => router.push(`/jobs/${job.id}`)}>
           View
         </Button>
