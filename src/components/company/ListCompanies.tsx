@@ -33,7 +33,7 @@ const ListCompanies = () => {
   if (status === "success" && !companies.length && !hasNextPage)
     return (
       <p className="text-center text-muted-foreground">
-        No one has posted anything yet.
+        Seems like there are no companies yet.
       </p>
     );
 
@@ -49,10 +49,12 @@ const ListCompanies = () => {
       className="space-y-5"
       onBottomReached={() => hasNextPage && !isFetching && fetchNextPage()}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {companies?.map((company) => (
-          <CompanyCard key={company.id} company={company} />
-        ))}
+      <div className="container mx-auto p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {companies.map((company, index) => (
+            <CompanyCard key={index} company={company} />
+          ))}
+        </div>
       </div>
       {isFetchingNextPage && <Loader2 className="mx-auto my-3 animate-spin" />}
     </InfiniteScrollContainer>

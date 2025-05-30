@@ -1,4 +1,4 @@
-import { CompaniesPage } from "@/common/types/company.types";
+import { CompaniesPage, companyDataSelect } from "@/common/types/company.types";
 import { getSession } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
     }
 
     const companies = await prisma.company.findMany({
+      select: companyDataSelect,
       orderBy: {
         createdAt: "desc",
       },
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
     });
 
     const nextCursor =
-      companies.length > pageSize ? companies[pageSize].id : null;
+      companies.length > pageSize ? companies[pageSize].userId : null;
 
     const data: CompaniesPage = {
       companies: companies.slice(0, pageSize),

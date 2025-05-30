@@ -48,7 +48,9 @@ export default function JobCard({ job, currentUserId }: JobCardProps) {
             className="font-medium"
           >
             <CalendarIcon className="h-3 w-3 mr-1" />
-            {daysRemaining <= 0 ? "Expired" : `${daysRemaining} days left`}
+            {daysRemaining <= 0
+              ? "Expired"
+              : `${daysRemaining} ${daysRemaining === 1 ? "day" : "days"} left`}
           </Badge>
         </div>
       </div>
