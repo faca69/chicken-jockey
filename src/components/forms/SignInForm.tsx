@@ -5,34 +5,52 @@ import { Input } from "../ui/input";
 import LabelInputContainer from "@/components/LabelInputContainer";
 import { toast } from "sonner";
 import { useState } from "react";
-import { signInFnction } from "@/actions/sign-in.action";
 import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import BottomGradient from "../BottomGradient";
 import Link from "next/link";
+import { signIn } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const router = useRouter();
 
   const loadingSignIn = <span className="animate-pulse">Signing In...</span>;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsPending(true);
     const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    const { error } = await signInFnction(formData);
+    if (!email) return toast.error("Email is required");
+    if (!password) return toast.error("Password is required");
 
-    if (error) {
-      toast.error(error);
-      setIsPending(false);
-    } else {
-      toast.success("Signed in successfully");
-      window.location.href = "/jobs";
-    }
-
-    setIsPending(false);
+    await signIn.email({
+      email,
+      password,
+      fetchOptions: {
+        onRequest: () => {
+          setIsPending(true);
+        },
+        onResponse: () => {
+          setIsPending(false);
+        },
+        onError: (ctx: { error: { message: string; code?: string } }) => {
+          if (ctx.error.code === "EMAIL_NOT_VERIFIED") {
+            router.push("/auth/verify?error=email_not_verified");
+          } else {
+            toast.error(ctx.error.message);
+          }
+        },
+        onSuccess: () => {
+          toast.success("Signed in successfully");
+          router.push("/jobs");
+        },
+      },
+    });
   };
   return (
     <div className="shadow-input mx-auto w-full rounded-none p-4 md:rounded-2xl md:p-8">

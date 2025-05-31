@@ -43,8 +43,8 @@ export default function Navbar() {
     await signOut({
       fetchOptions: {
         onSuccess() {
-          toast.success("Signed out successfully");
           router.push("/auth/sign-in");
+          toast.success("Signed out successfully");
         },
         onError(context) {
           toast.error(context.error.message);
