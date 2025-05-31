@@ -6,6 +6,7 @@ type CreateCompanyParams = {
   companyName: string;
   industry: string;
   userId: string;
+  companyLogo: string;
 };
 
 export async function createCompany(params: CreateCompanyParams) {
@@ -15,6 +16,7 @@ export async function createCompany(params: CreateCompanyParams) {
         companyName: params.companyName,
         industry: params.industry,
         userId: params.userId,
+        companyLogo: params.companyLogo,
       },
     });
 

@@ -1,10 +1,9 @@
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { prisma } from "@/lib/prisma";
 
 const f = createUploadthing();
+
+const auth = (req: Request) => ({ id: "fakeId" }); // Fake auth function
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
@@ -20,14 +19,15 @@ export const ourFileRouter = {
     },
   })
     // Set permissions and file types for this FileRoute
-    .middleware(async () => {
-      const session = await auth.api.getSession({
-        headers: await headers(),
-      });
+    .middleware(async ({ req }) => {
+      // This code runs on your server before upload
+      const user = await auth(req);
 
-      if (!session?.user) throw new UploadThingError("Unauthorized");
+      // If you throw, the user will not be able to upload
+      if (!user) throw new UploadThingError("Unauthorized");
 
-      return { userId: session.user.id };
+      // Whatever is returned here is accessible in onUploadComplete as `metadata`
+      return { userId: user.id };
     })
     .onUploadComplete(async ({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
@@ -35,24 +35,8 @@ export const ourFileRouter = {
 
       console.log("file url", file.ufsUrl);
 
-      await prisma.jobseeker.update({
-        where: {
-          userId: metadata.userId,
-        },
-        data: {
-          profilePicture: file.ufsUrl,
-        },
-      });
-
-      await auth.api.updateUser({
-        headers: await headers(),
-        body: {
-          image: file.ufsUrl,
-        },
-      });
-
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
-      return { uploadedBy: metadata.userId, url: file.ufsUrl };
+      return { uploadedBy: metadata.userId };
     }),
 } satisfies FileRouter;
 

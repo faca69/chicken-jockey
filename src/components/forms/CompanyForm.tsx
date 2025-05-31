@@ -18,12 +18,29 @@ import {
 import { createCompany } from "@/actions/company-create.action";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { useUploadThing } from "@/lib/uploadthing";
+import Image from "next/image";
 
 export default function CompanyForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const router = useRouter();
+  const { startUpload, isUploading } = useUploadThing("imageUploader");
   const loadingText = <span className="animate-pulse">Signing Up...</span>;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFile(file);
+      const fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        setLogoPreview(e.target?.result as string);
+      };
+      fileReader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -35,35 +52,38 @@ export default function CompanyForm() {
     const email = formData.get("companyEmail") as string;
     const password = formData.get("password") as string;
 
-    if (!companyName || !industry || !email || !password) {
+    if (!companyName || !industry || !email || !password || !logoFile) {
       toast.error("All fields are required");
       setIsPending(false);
       return;
     }
 
     try {
-      console.log("Attempting to sign up with email:", email);
+      // Upload logo file to get URL
+      let companyLogo = "";
+      if (logoFile) {
+        const uploadResult = await startUpload([logoFile]);
+        if (!uploadResult || uploadResult.length === 0) {
+          throw new Error("Failed to upload company logo");
+        }
+        companyLogo = uploadResult[0].url;
+      }
+
       const signUpResult = await authClient.signUp.email({
         email,
         password,
+        image: companyLogo,
         name: companyName,
         role: "COMPANY",
       });
 
-      console.log("Sign up result:", JSON.stringify(signUpResult.data));
-
       if (signUpResult.data?.user) {
-        console.log(
-          "User created successfully, creating company with userId:",
-          signUpResult.data.user.id
-        );
         const createCompanyResult = await createCompany({
           companyName,
           industry,
           userId: signUpResult.data.user.id,
+          companyLogo,
         });
-
-        console.log("Company creation result:", createCompanyResult);
 
         if (createCompanyResult.error) {
           console.error("Company creation error:", createCompanyResult.error);
@@ -91,6 +111,26 @@ export default function CompanyForm() {
 
   return (
     <form className="my-8 max-w-md" onSubmit={handleSubmit}>
+      <LabelInputContainer className="mb-4">
+        <Label htmlFor="companyLogo">Company Logo</Label>
+        <Input
+          id="companyLogo"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+        {logoPreview && (
+          <div className="mt-2 flex items-center justify-center">
+            <Image
+              width={80}
+              height={80}
+              src={logoPreview}
+              alt="Company Logo Preview"
+              className="object-cover rounded-md"
+            />
+          </div>
+        )}
+      </LabelInputContainer>
       <LabelInputContainer className="mb-4">
         <Label htmlFor="companyName">Company Name</Label>
         <Input
@@ -159,11 +199,11 @@ export default function CompanyForm() {
         </div>
       </LabelInputContainer>
       <button
-        disabled={isPending}
+        disabled={isPending || isUploading}
         className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
         type="submit"
       >
-        {isPending ? loadingText : "Sign Up"}
+        {isPending || isUploading ? loadingText : "Sign Up"}
         <BottomGradient />
       </button>
     </form>
