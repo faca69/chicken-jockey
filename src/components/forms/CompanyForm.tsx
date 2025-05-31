@@ -1,69 +1,3 @@
-// import { Input } from "../ui/input";
-// import {
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-//   Select,
-// } from "../ui/select";
-// import { Label } from "../ui/label";
-// import { Button } from "../ui/button";
-
-// function CompanyForm() {
-//   return (
-//     <form className="space-y-4">
-//       <div className="space-y-2">
-//         <Label htmlFor="company-name">Company Name</Label>
-//         <Input id="company-name" placeholder="Acme Inc." required />
-//       </div>
-
-//       <div className="space-y-2">
-//         <Label htmlFor="company-industry">Industry</Label>
-//         <Select required>
-//           <SelectTrigger>
-//             <SelectValue placeholder="Select industry" />
-//           </SelectTrigger>
-//           <SelectContent>
-//             <SelectItem value="technology">Technology</SelectItem>
-//             <SelectItem value="healthcare">Healthcare</SelectItem>
-//             <SelectItem value="finance">Finance</SelectItem>
-//             <SelectItem value="education">Education</SelectItem>
-//             <SelectItem value="retail">Retail</SelectItem>
-//             <SelectItem value="manufacturing">Manufacturing</SelectItem>
-//             <SelectItem value="other">Other</SelectItem>
-//           </SelectContent>
-//         </Select>
-//       </div>
-
-//       <div className="space-y-2">
-//         <Label htmlFor="company-email">Business Email</Label>
-//         <Input
-//           id="company-email"
-//           type="email"
-//           placeholder="contact@acme.com"
-//           required
-//         />
-//       </div>
-
-//       <div className="space-y-2 ">
-//         <Label htmlFor="company-password">Password</Label>
-//         <Input
-//           id="company-password"
-//           type="password"
-//           required
-//           placeholder="********"
-//         />
-//       </div>
-
-//       <Button type="submit" className="w-full">
-//         Create Account
-//       </Button>
-//     </form>
-//   );
-// }
-
-// export default CompanyForm;
-
 "use client";
 
 import { Label } from "../ui/label";
@@ -81,31 +15,66 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { companySignUpFunction } from "@/actions/company-sign-up.action";
+import { createCompany } from "@/actions/company-create.action";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export default function CompanyForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const router = useRouter();
   const loadingText = <span className="animate-pulse">Signing Up...</span>;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsPending(true);
+
     const formData = new FormData(e.target as HTMLFormElement);
+    const companyName = formData.get("companyName") as string;
+    const industry = formData.get("industry") as string;
+    const email = formData.get("companyEmail") as string;
+    const password = formData.get("password") as string;
 
-    const { error } = await companySignUpFunction(formData);
-
-    if (error) {
-      toast.error(error);
+    if (!companyName || !industry || !email || !password) {
+      toast.error("All fields are required");
       setIsPending(false);
-    } else {
-      toast.success("Sign up successful");
-      window.location.href = "/auth/sign-up/success";
+      return;
     }
 
-    setIsPending(false);
+    try {
+      const signUpResult = await authClient.signUp.email({
+        email,
+        password,
+        name: companyName,
+        role: "COMPANY",
+      });
+
+      if (signUpResult.data?.user) {
+        const { error } = await createCompany({
+          companyName,
+          industry,
+          userId: signUpResult.data.user.id,
+        });
+
+        if (error) {
+          toast.error(error);
+        } else {
+          toast.success("Sign up successful");
+          router.push("/auth/sign-up/success");
+        }
+      }
+    } catch (error) {
+      const err = error as { code?: string; message?: string };
+      if (err.code === "USER_ALREADY_EXISTS") {
+        toast.error("User already exists");
+      } else {
+        toast.error(err.message || "Failed to sign up");
+      }
+    } finally {
+      setIsPending(false);
+    }
   };
+
   return (
     <form className="my-8 max-w-md" onSubmit={handleSubmit}>
       <LabelInputContainer className="mb-4">

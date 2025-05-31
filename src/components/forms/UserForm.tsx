@@ -9,11 +9,12 @@ import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import BottomGradient from "../BottomGradient";
 import { userSignUpFunction } from "@/actions/user-sign-up.action";
+import { useRouter } from "next/navigation";
 
 export default function UserForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const router = useRouter();
   const loadingText = <span className="animate-pulse">Signing Up...</span>;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -28,7 +29,7 @@ export default function UserForm() {
       setIsPending(false);
     } else {
       toast.success("Sign up successful");
-      window.location.href = "/auth/sign-up/success";
+      router.push("/auth/sign-up/success");
     }
 
     setIsPending(false);

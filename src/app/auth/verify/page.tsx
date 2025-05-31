@@ -7,7 +7,7 @@ interface PageProps {
 async function VerifyPage({ searchParams }: PageProps) {
   const error = (await searchParams).error;
 
-  if (!error) return redirect("/profile");
+  if (!error) return redirect("/jobs");
   return (
     <div>
       <h1>Verify your email</h1>
