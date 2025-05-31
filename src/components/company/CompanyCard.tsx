@@ -11,7 +11,7 @@ export default function CompanyCard({
   company: CompanyWithJobCount;
 }) {
   return (
-    <Link href={`/company/${company.userId}`} className="block max-w-[250px]">
+    <Link href={`/companies/${company.userId}`} className="block max-w-[250px]">
       <Card className="group cursor-pointer hover:shadow-lg w-full">
         <CardContent className="">
           <div className="flex flex-col items-center text-center space-y-4">

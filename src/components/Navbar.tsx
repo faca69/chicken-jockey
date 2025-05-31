@@ -37,7 +37,7 @@ export default function Navbar() {
   const isUser = session?.user?.role === "USER";
   const profileLink = isUser
     ? `/user/${session?.user?.id}`
-    : `/company/${session?.user?.id}`;
+    : `/companies/${session?.user?.id}`;
 
   const handleSignOut = async () => {
     await signOut({

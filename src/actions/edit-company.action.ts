@@ -18,6 +18,6 @@ export async function editCompanyAction(formData: FormData) {
     data: { companyName, industry, website, location, phone, email },
   });
 
-  revalidatePath(`/company/${id}`);
-  redirect(`/company/${id}`);
+  revalidatePath(`/companies/${id}`);
+  redirect(`/companies/${id}`);
 }

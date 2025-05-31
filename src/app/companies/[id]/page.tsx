@@ -28,7 +28,7 @@ export default async function CompanyPage({ params }: CompanyPageProps) {
     <div>
       <div>
         {isCompanyHimself && (
-          <Link href={`/company/${id}/edit`}>
+          <Link href={`/companies/${id}/edit`}>
             <Button>Edit Company</Button>
           </Link>
         )}
