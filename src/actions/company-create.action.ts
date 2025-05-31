@@ -10,12 +10,18 @@ type CreateCompanyParams = {
 
 export async function createCompany(params: CreateCompanyParams) {
   try {
-    await prisma.company.create({
-      data: {
-        companyName: params.companyName,
-        industry: params.industry,
-        userId: params.userId,
-      },
+    await prisma.$transaction(async (tx) => {
+      const company = await tx.company.create({
+        data: {
+          companyName: params.companyName,
+          industry: params.industry,
+          userId: params.userId,
+        },
+      });
+
+      if (!company) {
+        throw new Error("Failed to create company");
+      }
     });
 
     return { error: null };

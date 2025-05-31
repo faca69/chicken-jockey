@@ -28,12 +28,18 @@ export async function companySignUpFunction(formData: FormData) {
       },
     });
 
-    await prisma.company.create({
-      data: {
-        companyName,
-        industry,
-        userId: user.user.id,
-      },
+    await prisma.$transaction(async (tx) => {
+      const company = await tx.company.create({
+        data: {
+          companyName,
+          industry,
+          userId: user.user.id,
+        },
+      });
+
+      if (!company) {
+        throw new Error("Failed to create company");
+      }
     });
 
     revalidatePath("/", "layout");
