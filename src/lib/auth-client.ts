@@ -4,7 +4,7 @@ import type { auth } from "./auth";
 
 export const authClient = createAuthClient({
   plugins: [inferAdditionalFields<typeof auth>()],
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  // baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
 export const {

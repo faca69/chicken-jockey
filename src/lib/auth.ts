@@ -17,7 +17,7 @@ export const auth = betterAuth({
     requireEmailVerification: true,
   },
   trustedOrigins: [process.env.NEXT_PUBLIC_API_URL || ""],
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  // baseURL: process.env.NEXT_PUBLIC_API_URL,
   emailVerification: {
     sendOnSignUp: true,
     expiresIn: 60 * 60,
