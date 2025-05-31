@@ -16,7 +16,7 @@ export const auth = betterAuth({
     autoSignIn: false,
     requireEmailVerification: true,
   },
-  trustedOrigins: [process.env.NEXT_PUBLIC_API_URL || ""],
+  trustedOrigins: [process.env.NEXT_PUBLIC_API_URL!],
   // baseURL: process.env.NEXT_PUBLIC_API_URL,
   emailVerification: {
     sendOnSignUp: true,
