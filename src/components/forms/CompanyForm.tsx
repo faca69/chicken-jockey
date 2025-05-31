@@ -42,6 +42,7 @@ export default function CompanyForm() {
     }
 
     try {
+      console.log("Attempting to sign up with email:", email);
       const signUpResult = await authClient.signUp.email({
         email,
         password,
@@ -49,26 +50,39 @@ export default function CompanyForm() {
         role: "COMPANY",
       });
 
+      console.log("Sign up result:", JSON.stringify(signUpResult.data));
+
       if (signUpResult.data?.user) {
-        const { error } = await createCompany({
+        console.log(
+          "User created successfully, creating company with userId:",
+          signUpResult.data.user.id
+        );
+        const createCompanyResult = await createCompany({
           companyName,
           industry,
           userId: signUpResult.data.user.id,
         });
 
-        if (error) {
-          toast.error(error);
+        console.log("Company creation result:", createCompanyResult);
+
+        if (createCompanyResult.error) {
+          console.error("Company creation error:", createCompanyResult.error);
+          toast.error(`Error creating company: ${createCompanyResult.error}`);
         } else {
           toast.success("Sign up successful");
           router.push("/auth/sign-up/success");
         }
+      } else {
+        console.error("User creation successful but user data is missing");
+        toast.error("User creation successful but user data is missing");
       }
     } catch (error) {
+      console.error("Sign up error:", error);
       const err = error as { code?: string; message?: string };
       if (err.code === "USER_ALREADY_EXISTS") {
         toast.error("User already exists");
       } else {
-        toast.error(err.message || "Failed to sign up");
+        toast.error(`Failed to sign up: ${err.message || "Unknown error"}`);
       }
     } finally {
       setIsPending(false);
