@@ -18,7 +18,7 @@ export async function middleware(req: NextRequest) {
   }
 
   if (isLoggedIn && isOnAuthRoute) {
-    return NextResponse.redirect(new URL("/profile", req.url));
+    return NextResponse.redirect(new URL("/jobs", req.url));
   }
 
   return res;

@@ -10,11 +10,12 @@ import { Button } from "../ui/button";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 import BottomGradient from "../BottomGradient";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
   const [isPending, setIsPending] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-
+  const router = useRouter();
   const loadingSignIn = <span className="animate-pulse">Signing In...</span>;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,7 +30,7 @@ export default function SignInForm() {
       setIsPending(false);
     } else {
       toast.success("Signed in successfully");
-      window.location.href = "/jobs";
+      router.push("/jobs");
     }
 
     setIsPending(false);
