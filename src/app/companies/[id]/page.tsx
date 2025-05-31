@@ -18,7 +18,6 @@ type CompanyPageProps = {
 export default async function CompanyPage({ params }: CompanyPageProps) {
   const { id } = await params;
   const session = await getSession();
-  if (!session) redirect("/auth/sign-in");
 
   const company = await getCompanyByUserId(id);
 
@@ -27,7 +26,7 @@ export default async function CompanyPage({ params }: CompanyPageProps) {
   }
 
   const jobs = await getCompaniesJobs(company.id);
-  const isCompanyHimself = session.user.id === company?.userId;
+  const isCompanyHimself = session?.user.id === company?.userId;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">

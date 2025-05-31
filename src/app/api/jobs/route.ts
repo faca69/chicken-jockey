@@ -1,4 +1,3 @@
-import { getSession } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { jobDataInclude, JobsPage } from "@/common/types/job.types";
 import { NextRequest, NextResponse } from "next/server";
@@ -7,12 +6,6 @@ export async function GET(req: NextRequest) {
   try {
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
     const pageSize = 12;
-
-    const session = await getSession();
-
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const jobs = await prisma.job.findMany({
       include: jobDataInclude,

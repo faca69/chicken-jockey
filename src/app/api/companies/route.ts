@@ -1,5 +1,4 @@
 import { CompaniesPage, companyDataSelect } from "@/common/types/company.types";
-import { getSession } from "@/lib/auth-helpers";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,12 +6,6 @@ export async function GET(req: NextRequest) {
   try {
     const cursor = req.nextUrl.searchParams.get("cursor") || undefined;
     const pageSize = 12;
-
-    const session = await getSession();
-
-    if (!session) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
     const companies = await prisma.company.findMany({
       select: companyDataSelect,
