@@ -58,8 +58,8 @@ export default function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
-            <Link href="/">
-              <h1 className="text-2xl font-bold text-primary ">Frontend.mk</h1>
+            <Link href="/jobs" className="text-2xl font-bold text-primary">
+              Frontend.mk
             </Link>
           </div>
 

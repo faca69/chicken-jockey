@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   images: {
+    domains: ["utfs.io"],
     remotePatterns: [new URL("https://k7e5kx5bey.ufs.sh/f/**")],
   },
   eslint: {
